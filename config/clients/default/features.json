@@ -1,0 +1,6 @@
+{
+  "dashboard": true,
+  "reports": true,
+  "appointments": true,
+  "advancedAnalytics": false
+}

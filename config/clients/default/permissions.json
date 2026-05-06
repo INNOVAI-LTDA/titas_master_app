@@ -1,0 +1,8 @@
+{
+  "roles": ["admin", "manager", "operator", "viewer"],
+  "policies": {
+    "patients.read": ["admin", "manager", "operator", "viewer"],
+    "patients.write": ["admin", "manager", "operator"],
+    "reports.export": ["admin", "manager"]
+  }
+}

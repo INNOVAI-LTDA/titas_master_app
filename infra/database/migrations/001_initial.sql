@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS patients (
+  id VARCHAR PRIMARY KEY,
+  full_name VARCHAR NOT NULL,
+  document VARCHAR NULL,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE
+);
