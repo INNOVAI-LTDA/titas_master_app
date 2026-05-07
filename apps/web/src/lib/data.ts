@@ -3,11 +3,37 @@ import { supabase } from "@/integrations/supabase/client";
 import { mesAnterior } from "@/lib/competencia";
 
 export type Grupo = { id: string; nome: string; icone: string | null; data_criacao: string };
-export type Membro = { id: string; grupo_id: string; nome: string; especialidade: string | null; telefone: string | null };
-export type Competencia = { id: string; grupo_id: string; mes_referencia: string; status: "aberta" | "fechada"; data_abertura: string; data_fechamento: string | null };
-export type Faturamento = { id: string; grupo_id: string; membro_id: string; mes_referencia: string; valor_bruto: number; data_registro: string };
+export type Membro = {
+  id: string;
+  grupo_id: string;
+  nome: string;
+  especialidade: string | null;
+  telefone: string | null;
+};
+export type Competencia = {
+  id: string;
+  grupo_id: string;
+  mes_referencia: string;
+  status: "aberta" | "fechada";
+  data_abertura: string;
+  data_fechamento: string | null;
+};
+export type Faturamento = {
+  id: string;
+  grupo_id: string;
+  membro_id: string;
+  mes_referencia: string;
+  valor_bruto: number;
+  data_registro: string;
+};
 export type Hotseat = { id: string; grupo_id: string; data_hotseat: string; lider_id: string };
-export type Gargalo = { id: string; hotseat_id: string; membro_id: string; descricao: string; data_criacao: string };
+export type Gargalo = {
+  id: string;
+  hotseat_id: string;
+  membro_id: string;
+  descricao: string;
+  data_criacao: string;
+};
 
 export function useGrupos() {
   return useQuery({
@@ -30,7 +56,11 @@ export function useMembros(grupoId?: string) {
     queryKey: ["membros", grupoId],
     enabled: !!grupoId,
     queryFn: async () => {
-      const { data, error } = await supabase.from("membros").select("*").eq("grupo_id", grupoId!).order("nome");
+      const { data, error } = await supabase
+        .from("membros")
+        .select("*")
+        .eq("grupo_id", grupoId!)
+        .order("nome");
       if (error) throw error;
       return data as Membro[];
     },
@@ -42,7 +72,11 @@ export function useCompetencias(grupoId?: string) {
     queryKey: ["competencias", grupoId],
     enabled: !!grupoId,
     queryFn: async () => {
-      const { data, error } = await supabase.from("competencias_mensais").select("*").eq("grupo_id", grupoId!).order("mes_referencia", { ascending: false });
+      const { data, error } = await supabase
+        .from("competencias_mensais")
+        .select("*")
+        .eq("grupo_id", grupoId!)
+        .order("mes_referencia", { ascending: false });
       if (error) throw error;
       return data as Competencia[];
     },
@@ -75,13 +109,17 @@ export function useInvalidate() {
 /** Garante que existe a competência do mês alvo. Retorna a competência. */
 export async function garantirCompetencia(grupoId: string, mesRef: string) {
   const { data: existente } = await supabase
-    .from("competencias_mensais").select("*")
-    .eq("grupo_id", grupoId).eq("mes_referencia", mesRef).maybeSingle();
+    .from("competencias_mensais")
+    .select("*")
+    .eq("grupo_id", grupoId)
+    .eq("mes_referencia", mesRef)
+    .maybeSingle();
   if (existente) return existente as Competencia;
   const { data, error } = await supabase
     .from("competencias_mensais")
     .insert({ grupo_id: grupoId, mes_referencia: mesRef, status: "aberta" })
-    .select().single();
+    .select()
+    .single();
   if (error) throw error;
   return data as Competencia;
 }

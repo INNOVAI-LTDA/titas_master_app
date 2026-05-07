@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { listPatients } from './services';
-import type { Patient } from './types';
+import { useEffect, useState } from "react";
+import { listPatients } from "./services";
+import type { Patient } from "./types";
 
 export function PatientsPage() {
   const [patients, setPatients] = useState<Patient[]>([]);

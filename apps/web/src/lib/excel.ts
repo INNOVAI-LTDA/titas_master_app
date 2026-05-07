@@ -18,7 +18,15 @@ export function exportarRelatorioXlsx(opts: {
     [`Mês de referência: ${formatarMesRefLongo(mesRef)}`],
     [`Data de emissão: ${dataEmissao}`],
     [],
-    ["Grupo", "Mês de referência", "Data de emissão", "Nome do membro", "Especialidade", "Telefone", "Faturamento bruto"],
+    [
+      "Grupo",
+      "Mês de referência",
+      "Data de emissão",
+      "Nome do membro",
+      "Especialidade",
+      "Telefone",
+      "Faturamento bruto",
+    ],
   ];
 
   const linhas = membros.map((m) => {
@@ -49,7 +57,15 @@ export function exportarRelatorioXlsx(opts: {
   const aoa = [...header, ...linhas, ...rodape];
   const ws = XLSX.utils.aoa_to_sheet(aoa);
 
-  ws["!cols"] = [{ wch: 22 }, { wch: 22 }, { wch: 14 }, { wch: 26 }, { wch: 22 }, { wch: 18 }, { wch: 18 }];
+  ws["!cols"] = [
+    { wch: 22 },
+    { wch: 22 },
+    { wch: 14 },
+    { wch: 26 },
+    { wch: 22 },
+    { wch: 18 },
+    { wch: 18 },
+  ];
 
   // Formato moeda na coluna G dos dados + total
   const startRow = 6; // 0-indexed: header tem 6 linhas (índices 0..5)
