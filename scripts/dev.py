@@ -2,37 +2,27 @@
 from __future__ import annotations
 
 import argparse
-import os
 import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-
-
-def run(cmd: list[str], cwd: Path | None = None) -> None:
-    print('[RUN]', ' '.join(cmd))
-    subprocess.run(cmd, cwd=cwd or ROOT, check=True)
-
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description='Sobe ambiente local do template.')
-    parser.add_argument('--client', default=os.getenv('CLIENT_CODE', 'cliente-demo'))
-    parser.add_argument('--no-db', action='store_true')
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--client", default="titas-master")
+    parser.add_argument("--package-manager", default="npm", choices=["npm", "pnpm", "bun"])
     args = parser.parse_args()
-
-    env = os.environ.copy()
-    env.setdefault('CLIENT_CODE', args.client)
-
-    if not args.no_db:
-        run(['docker', 'compose', '-f', 'infra/local/docker-compose.yml', 'up', '-d', 'postgres'])
-
-    print('\nProximos comandos em terminais separados:')
-    print('  API: cd apps/api && uvicorn src.main:app --reload --host 127.0.0.1 --port 8000')
-    print('  WEB: cd apps/web && npm run dev -- --port 5173')
-    print('\nDica: mantenha estes comandos simples no template; cada projeto pode adicionar automacao depois.')
-    return 0
+    root = Path(__file__).resolve().parents[1]
+    web = root / "apps" / "web"
+    if args.package_manager == "bun":
+        cmd = ["bun", "run", "dev"]
+    elif args.package_manager == "pnpm":
+        cmd = ["pnpm", "dev"]
+    else:
+        cmd = ["npm", "run", "dev"]
+    print(f"Iniciando {args.client} em {web} com {args.package_manager}...")
+    return subprocess.call(cmd, cwd=web)
 
 
-if __name__ == '__main__':
-    sys.exit(main())
+if __name__ == "__main__":
+    raise SystemExit(main())

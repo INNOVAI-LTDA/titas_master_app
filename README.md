@@ -1,75 +1,62 @@
-# Client System Template
+# Titãs Master App
 
-Template full-stack para sistemas web customizaveis por cliente, com foco em:
+Aplicação web do **Titãs Master**, adaptada para o padrão de repositório da **Innovai**.
 
-- execucao local reprodutivel;
-- transicao local -> deploy remoto por configuracao;
-- arquitetura modular;
-- dados sensiveis;
-- manutencao recorrente;
-- escala moderada por cliente, na faixa de centenas ate poucos milhares de usuarios.
+## O que está neste repositório
 
-## Arquitetura proposta
+```text
+titas_master_app/
+  apps/
+    web/                  # React + TanStack Start + Vite + Tailwind
+    api/                  # reservado para futura API FastAPI
+  config/
+    clients/titas-master/ # configuração do cliente/app
+    environments/         # exemplos de ambiente
+  infra/
+    database/supabase/    # migrations SQL importadas do protótipo
+    local/                # infraestrutura local
+    deploy/               # receitas de deploy
+  scripts/                # comandos operacionais padronizados
+  docs/                   # notas técnicas
+```
 
-**Monolito modular customizavel por cliente**:
+## O que foi removido do gerador anterior
 
-- `apps/web`: front-end React/Vite/TypeScript;
-- `apps/api`: back-end FastAPI/Python;
-- `config/clients`: configuracoes por cliente;
-- `infra/local`: ambiente local com Docker Compose;
-- `infra/deploy`: receitas de deploy por provedor;
-- `scripts`: comandos operacionais padronizados;
-- `docs`: decisoes, arquitetura e operacao.
+- pasta interna do gerador anterior;
+- pacote de configuração proprietário do gerador anterior;
+- referências, URLs de preview e metatags do gerador anterior;
+- lockfile gerado com cache interno do gerador anterior;
+- arquivo `env` com valores concretos de Supabase.
 
-## Regra principal
-
-Local e producao devem ser o mesmo sistema com configuracoes diferentes.
-
-Nao altere codigo para sair do local e ir para remoto. Altere variaveis de ambiente, secrets, URLs, banco e configuracoes de deploy.
-
-## Inicio rapido
+## Rodando localmente
 
 ```bash
 cp .env.example .env
+cp apps/web/.env.example apps/web/.env.local
 python scripts/env_check.py --env-file .env
-python scripts/dev.py --client cliente-demo
+cd apps/web
+npm install
+npm run dev
 ```
 
-## Contrato de ambiente minimo
+Também funciona com Bun ou PNPM, desde que o lockfile seja regenerado fora do gerador anterior.
+
+## Variáveis mínimas do front-end
 
 ```env
-APP_ENV=local
-DEPLOY_TARGET=local
-CLIENT_CODE=cliente-demo
-DATABASE_URL=postgresql://app:app@localhost:5432/app
-API_BASE_URL=http://localhost:8000
-WEB_BASE_URL=http://localhost:5173
-CORS_ALLOWED_ORIGINS=http://localhost:5173
-JWT_SECRET=change-me-local
-STORAGE_BACKEND=local
-FILE_STORAGE_PATH=./storage
+VITE_SUPABASE_URL=https://seu-projeto.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=sua-chave-anon-publica
+VITE_SUPABASE_PROJECT_ID=seu-project-id
 ```
 
-## Estrutura
+## Build
 
-```text
-client-system-template/
-  apps/
-    api/
-    web/
-  config/
-    clients/
-    environments/
-  infra/
-    local/
-    deploy/
-    database/
-  scripts/
-  docs/
+```bash
+cd apps/web
+npm run build
+npm run preview
 ```
 
-## Quando usar este template
+## Nota prática
 
-Use para sistemas por cliente com alta customizacao, dados sensiveis e necessidade de manutencao controlada.
-
-Evite usar como base para produto multi-tenant massivo ou arquitetura de microservicos desde o dia zero.
+O protótipo ainda usa Supabase diretamente no front-end. Isso preserva o comportamento original com o mínimo de risco. O próximo passo natural, quando a dor aparecer, é mover regras sensíveis para `apps/api` e deixar o front-end só consumindo a API. Uma ponte de madeira antes da ponte estaiada — menos bonito no PowerPoint, mais útil na operação.

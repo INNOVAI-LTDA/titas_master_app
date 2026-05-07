@@ -1,14 +1,36 @@
+# Ambiente
 .env
-.env.*.local
-__pycache__/
-*.pyc
-.venv/
+.env.*
+!.env.example
+!.env*.example
+apps/web/.env.local
+apps/web/.env.*.local
+
+# Dependências
 node_modules/
-dist/
-build/
-coverage/
-.pytest_cache/
-.logs/
-storage/
-*.sqlite3
+apps/web/node_modules/
+
+# Build
+/dist/
+apps/web/dist/
+apps/web/.output/
+apps/web/.vinxi/
+apps/web/.tanstack/
+apps/web/.nitro/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+
+# Cloudflare
+.wrangler/
+apps/web/.wrangler/
+.dev.vars
+
+# Sistema/IDE
 .DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
