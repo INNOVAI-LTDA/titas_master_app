@@ -1,14 +1,34 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { useGrupoAtivo, useMembros, useFaturamentos, useCompetencias, garantirCompetencia, mesRefAlvo } from "@/lib/data";
+import {
+  useGrupoAtivo,
+  useMembros,
+  useFaturamentos,
+  useCompetencias,
+  garantirCompetencia,
+  mesRefAlvo,
+} from "@/lib/data";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/PageHeader";
@@ -36,11 +56,19 @@ function FaturamentoPage() {
   useEffect(() => {
     if (!grupo) return;
     if (comps.length === 0 || !comps.some((c) => c.status === "aberta")) {
-      garantirCompetencia(grupo.id, mesRefAlvo()).then(() => qc.invalidateQueries({ queryKey: ["competencias", grupo.id] }));
+      garantirCompetencia(grupo.id, mesRefAlvo()).then(() =>
+        qc.invalidateQueries({ queryKey: ["competencias", grupo.id] }),
+      );
     }
   }, [grupo, comps.length]);
 
-  if (!grupo) return <div className="px-8 py-8"><PageHeader title="Faturamento" /><p className="text-sm text-muted-foreground">Cadastre um grupo primeiro.</p></div>;
+  if (!grupo)
+    return (
+      <div className="px-8 py-8">
+        <PageHeader title="Faturamento" />
+        <p className="text-sm text-muted-foreground">Cadastre um grupo primeiro.</p>
+      </div>
+    );
 
   const total = fats.reduce((s, f) => s + Number(f.valor_bruto), 0);
   const fechada = !competenciaAberta;
@@ -53,12 +81,21 @@ function FaturamentoPage() {
     if (isNaN(v) || v < 0) return toast.error("Valor inválido");
     setSalvando(true);
     const { error } = await supabase.from("faturamentos_mensais").insert({
-      grupo_id: grupo.id, membro_id: membroId, mes_referencia: mesRef, valor_bruto: v,
+      grupo_id: grupo.id,
+      membro_id: membroId,
+      mes_referencia: mesRef,
+      valor_bruto: v,
     });
     setSalvando(false);
-    if (error) return toast.error(error.message.includes("duplicate") ? "Este membro já tem faturamento neste mês" : error.message);
+    if (error)
+      return toast.error(
+        error.message.includes("duplicate")
+          ? "Este membro já tem faturamento neste mês"
+          : error.message,
+      );
     toast.success("Faturamento lançado");
-    setMembroId(""); setValor("");
+    setMembroId("");
+    setValor("");
     qc.invalidateQueries({ queryKey: ["faturamentos", grupo.id, mesRef] });
   };
 
@@ -71,8 +108,14 @@ function FaturamentoPage() {
 
   const fechar = async () => {
     if (!competenciaAberta) return;
-    if (!confirm(`Fechar competência ${formatarMesRefLongo(mesRef)}? Após o fechamento, nenhum lançamento poderá ser editado, removido ou criado neste mês. "Mês fechado vira pedra".`)) return;
-    const { error } = await supabase.from("competencias_mensais")
+    if (
+      !confirm(
+        `Fechar competência ${formatarMesRefLongo(mesRef)}? Após o fechamento, nenhum lançamento poderá ser editado, removido ou criado neste mês. "Mês fechado vira pedra".`,
+      )
+    )
+      return;
+    const { error } = await supabase
+      .from("competencias_mensais")
       .update({ status: "fechada", bloqueada: true, data_fechamento: new Date().toISOString() })
       .eq("id", competenciaAberta.id);
     if (error) return toast.error(error.message);
@@ -92,11 +135,29 @@ function FaturamentoPage() {
         subtitle={`Lançamento mensal · ${formatarMesRefLongo(mesRef)}`}
         actions={
           <>
-            <Badge variant="outline" className={fechada ? "border-muted-foreground text-muted-foreground" : "border-gold text-gold"}>
-              {fechada ? <><Lock className="h-3 w-3 mr-1" /> Competência fechada</> : "Competência aberta"}
+            <Badge
+              variant="outline"
+              className={
+                fechada ? "border-muted-foreground text-muted-foreground" : "border-gold text-gold"
+              }
+            >
+              {fechada ? (
+                <>
+                  <Lock className="h-3 w-3 mr-1" /> Competência fechada
+                </>
+              ) : (
+                "Competência aberta"
+              )}
             </Badge>
-            <Button variant="outline" onClick={exportar}><Download className="h-4 w-4 mr-2" />Excel</Button>
-            {!fechada && <Button onClick={fechar} className="bg-blood text-foreground hover:opacity-90">Fechar competência</Button>}
+            <Button variant="outline" onClick={exportar}>
+              <Download className="h-4 w-4 mr-2" />
+              Excel
+            </Button>
+            {!fechada && (
+              <Button onClick={fechar} className="bg-blood text-foreground hover:opacity-90">
+                Fechar competência
+              </Button>
+            )}
           </>
         }
       />
@@ -108,18 +169,39 @@ function FaturamentoPage() {
             <div>
               <Label>Membro</Label>
               <Select value={membroId} onValueChange={setMembroId}>
-                <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione" />
+                </SelectTrigger>
                 <SelectContent>
-                  {membrosDisponiveis.map((m) => <SelectItem key={m.id} value={m.id}>{m.nome}</SelectItem>)}
-                  {membrosDisponiveis.length === 0 && <div className="px-2 py-1 text-xs text-muted-foreground">Todos os membros já foram lançados</div>}
+                  {membrosDisponiveis.map((m) => (
+                    <SelectItem key={m.id} value={m.id}>
+                      {m.nome}
+                    </SelectItem>
+                  ))}
+                  {membrosDisponiveis.length === 0 && (
+                    <div className="px-2 py-1 text-xs text-muted-foreground">
+                      Todos os membros já foram lançados
+                    </div>
+                  )}
                 </SelectContent>
               </Select>
             </div>
             <div>
               <Label>Faturamento bruto (R$)</Label>
-              <Input value={valor} onChange={(e) => setValor(e.target.value)} placeholder="0,00" inputMode="decimal" />
+              <Input
+                value={valor}
+                onChange={(e) => setValor(e.target.value)}
+                placeholder="0,00"
+                inputMode="decimal"
+              />
             </div>
-            <Button type="submit" disabled={salvando} className="bg-gold text-primary-foreground hover:opacity-90">Lançar</Button>
+            <Button
+              type="submit"
+              disabled={salvando}
+              className="bg-gold text-primary-foreground hover:opacity-90"
+            >
+              Lançar
+            </Button>
           </form>
         </Card>
       )}
@@ -145,15 +227,25 @@ function FaturamentoPage() {
                 <TableRow key={f.id}>
                   <TableCell className="font-medium">{m?.nome ?? "—"}</TableCell>
                   <TableCell className="text-muted-foreground">{m?.especialidade ?? "—"}</TableCell>
-                  <TableCell className="text-right text-gold font-display">{formatarBRL(Number(f.valor_bruto))}</TableCell>
+                  <TableCell className="text-right text-gold font-display">
+                    {formatarBRL(Number(f.valor_bruto))}
+                  </TableCell>
                   <TableCell>
-                    {!fechada && <Button variant="ghost" size="icon" onClick={() => remover(f.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>}
+                    {!fechada && (
+                      <Button variant="ghost" size="icon" onClick={() => remover(f.id)}>
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    )}
                   </TableCell>
                 </TableRow>
               );
             })}
             {fats.length === 0 && (
-              <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground py-6">Nenhum lançamento ainda</TableCell></TableRow>
+              <TableRow>
+                <TableCell colSpan={4} className="text-center text-muted-foreground py-6">
+                  Nenhum lançamento ainda
+                </TableCell>
+              </TableRow>
             )}
           </TableBody>
         </Table>

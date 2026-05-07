@@ -6,7 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/PageHeader";
@@ -22,7 +29,18 @@ function MembrosPage() {
   const [salvando, setSalvando] = useState(false);
 
   if (!grupo) {
-    return <div className="px-8 py-8"><PageHeader title="Membros" /><p className="text-muted-foreground text-sm">Cadastre um grupo primeiro em <a href="/grupos" className="text-gold underline">Grupos</a>.</p></div>;
+    return (
+      <div className="px-8 py-8">
+        <PageHeader title="Membros" />
+        <p className="text-muted-foreground text-sm">
+          Cadastre um grupo primeiro em{" "}
+          <a href="/grupos" className="text-gold underline">
+            Grupos
+          </a>
+          .
+        </p>
+      </div>
+    );
   }
 
   const criar = async (e: React.FormEvent) => {
@@ -52,10 +70,31 @@ function MembrosPage() {
       <Card className="card-innovai p-6 mb-8">
         <h2 className="font-display text-lg text-gold mb-4">Novo membro</h2>
         <form onSubmit={criar} className="grid sm:grid-cols-[1fr_1fr_180px_auto] gap-3 items-end">
-          <div><Label>Nome</Label><Input value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} /></div>
-          <div><Label>Especialidade</Label><Input value={form.especialidade} onChange={(e) => setForm({ ...form, especialidade: e.target.value })} /></div>
-          <div><Label>Telefone</Label><Input value={form.telefone} onChange={(e) => setForm({ ...form, telefone: e.target.value })} /></div>
-          <Button type="submit" disabled={salvando} className="bg-gold text-primary-foreground hover:opacity-90">Cadastrar</Button>
+          <div>
+            <Label>Nome</Label>
+            <Input value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} />
+          </div>
+          <div>
+            <Label>Especialidade</Label>
+            <Input
+              value={form.especialidade}
+              onChange={(e) => setForm({ ...form, especialidade: e.target.value })}
+            />
+          </div>
+          <div>
+            <Label>Telefone</Label>
+            <Input
+              value={form.telefone}
+              onChange={(e) => setForm({ ...form, telefone: e.target.value })}
+            />
+          </div>
+          <Button
+            type="submit"
+            disabled={salvando}
+            className="bg-gold text-primary-foreground hover:opacity-90"
+          >
+            Cadastrar
+          </Button>
         </form>
       </Card>
 
@@ -76,12 +115,18 @@ function MembrosPage() {
                 <TableCell className="text-muted-foreground">{m.especialidade || "—"}</TableCell>
                 <TableCell className="text-muted-foreground">{m.telefone || "—"}</TableCell>
                 <TableCell>
-                  <Button variant="ghost" size="icon" onClick={() => remover(m.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                  <Button variant="ghost" size="icon" onClick={() => remover(m.id)}>
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
             {membros.length === 0 && (
-              <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground py-6">Nenhum membro cadastrado</TableCell></TableRow>
+              <TableRow>
+                <TableCell colSpan={4} className="text-center text-muted-foreground py-6">
+                  Nenhum membro cadastrado
+                </TableCell>
+              </TableRow>
             )}
           </TableBody>
         </Table>

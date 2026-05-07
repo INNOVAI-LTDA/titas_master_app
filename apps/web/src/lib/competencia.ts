@@ -14,13 +14,39 @@ export function mesAnterior(date = new Date()): string {
 
 export function formatarMesRef(iso: string): string {
   const [y, m] = iso.split("-");
-  const meses = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+  const meses = [
+    "jan",
+    "fev",
+    "mar",
+    "abr",
+    "mai",
+    "jun",
+    "jul",
+    "ago",
+    "set",
+    "out",
+    "nov",
+    "dez",
+  ];
   return `${meses[Number(m) - 1]}/${y}`;
 }
 
 export function formatarMesRefLongo(iso: string): string {
   const [y, m] = iso.split("-");
-  const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+  const meses = [
+    "Janeiro",
+    "Fevereiro",
+    "Março",
+    "Abril",
+    "Maio",
+    "Junho",
+    "Julho",
+    "Agosto",
+    "Setembro",
+    "Outubro",
+    "Novembro",
+    "Dezembro",
+  ];
   return `${meses[Number(m) - 1]} / ${y}`;
 }
 

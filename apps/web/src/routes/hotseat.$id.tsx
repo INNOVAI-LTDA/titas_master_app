@@ -7,12 +7,24 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { PageHeader } from "@/components/PageHeader";
 import { toast } from "sonner";
 import { ArrowLeft, AlertTriangle } from "lucide-react";
 
 export const Route = createFileRoute("/hotseat/$id")({ component: HotseatDetalhe });
+
+type Gargalo = {
+  id: string;
+  membro_id: string;
+  descricao: string;
+};
 
 function HotseatDetalhe() {
   const { id } = Route.useParams();
@@ -32,7 +44,11 @@ function HotseatDetalhe() {
   const { data: gargalos = [] } = useQuery({
     queryKey: ["gargalos", id],
     queryFn: async () => {
-      const { data, error } = await supabase.from("gargalos").select("*").eq("hotseat_id", id).order("data_criacao");
+      const { data, error } = await supabase
+        .from("gargalos")
+        .select("*")
+        .eq("hotseat_id", id)
+        .order("data_criacao");
       if (error) throw error;
       return data;
     },
@@ -44,10 +60,13 @@ function HotseatDetalhe() {
   const criar = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!membroId || !descricao.trim()) return toast.error("Preencha membro e descrição");
-    const { error } = await supabase.from("gargalos").insert({ hotseat_id: id, membro_id: membroId, descricao });
+    const { error } = await supabase
+      .from("gargalos")
+      .insert({ hotseat_id: id, membro_id: membroId, descricao });
     if (error) return toast.error(error.message);
     toast.success("Gargalo registrado");
-    setMembroId(""); setDescricao("");
+    setMembroId("");
+    setDescricao("");
     qc.invalidateQueries({ queryKey: ["gargalos", id] });
   };
 
@@ -55,7 +74,13 @@ function HotseatDetalhe() {
 
   return (
     <div className="px-8 py-8 max-w-4xl">
-      <Link to="/hotseat" className="text-sm text-muted-foreground hover:text-gold inline-flex items-center gap-1 mb-3"><ArrowLeft className="h-3 w-3" />Voltar</Link>
+      <Link
+        to="/hotseat"
+        className="text-sm text-muted-foreground hover:text-gold inline-flex items-center gap-1 mb-3"
+      >
+        <ArrowLeft className="h-3 w-3" />
+        Voltar
+      </Link>
       <PageHeader
         title={hotseat ? new Date(hotseat.data_hotseat).toLocaleDateString("pt-BR") : "Hotseat"}
         subtitle={lider ? `Líder: ${lider.nome}` : ""}
@@ -67,23 +92,36 @@ function HotseatDetalhe() {
           <div>
             <Label>Membro</Label>
             <Select value={membroId} onValueChange={setMembroId}>
-              <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
+              <SelectTrigger>
+                <SelectValue placeholder="Selecione" />
+              </SelectTrigger>
               <SelectContent>
-                {membros.map((m) => <SelectItem key={m.id} value={m.id}>{m.nome}</SelectItem>)}
+                {membros.map((m) => (
+                  <SelectItem key={m.id} value={m.id}>
+                    {m.nome}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
           <div>
             <Label>Descrição</Label>
-            <Textarea value={descricao} onChange={(e) => setDescricao(e.target.value)} rows={3} placeholder="Descreva o gargalo..." />
+            <Textarea
+              value={descricao}
+              onChange={(e) => setDescricao(e.target.value)}
+              rows={3}
+              placeholder="Descreva o gargalo..."
+            />
           </div>
-          <Button type="submit" className="bg-gold text-primary-foreground hover:opacity-90">Registrar</Button>
+          <Button type="submit" className="bg-gold text-primary-foreground hover:opacity-90">
+            Registrar
+          </Button>
         </form>
       </Card>
 
       <h3 className="font-display text-gold mb-3">Gargalos registrados</h3>
       <div className="space-y-3">
-        {gargalos.map((g: any) => {
+        {gargalos.map((g: Gargalo) => {
           const m = membros.find((x) => x.id === g.membro_id);
           return (
             <Card key={g.id} className="card-innovai p-4">
@@ -97,7 +135,9 @@ function HotseatDetalhe() {
             </Card>
           );
         })}
-        {gargalos.length === 0 && <p className="text-sm text-muted-foreground">Nenhum gargalo registrado.</p>}
+        {gargalos.length === 0 && (
+          <p className="text-sm text-muted-foreground">Nenhum gargalo registrado.</p>
+        )}
       </div>
     </div>
   );

@@ -75,15 +75,27 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Desafio dos Titãs | SPARTANOS" },
-      { name: "description", content: "Sistema de registro de faturamento, hotseats e gargalos do Titãs Master pela Innovai." },
+      {
+        name: "description",
+        content:
+          "Sistema de registro de faturamento, hotseats e gargalos do Titãs Master pela Innovai.",
+      },
       { name: "author", content: "Innovai" },
       { property: "og:title", content: "Desafio dos Titãs | SPARTANOS" },
-      { property: "og:description", content: "Sistema de registro de faturamento, hotseats e gargalos do Titãs Master pela Innovai." },
+      {
+        property: "og:description",
+        content:
+          "Sistema de registro de faturamento, hotseats e gargalos do Titãs Master pela Innovai.",
+      },
       { property: "og:type", content: "website" },
       { name: "theme-color", content: "#1f315f" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:title", content: "Desafio dos Titãs | SPARTANOS" },
-      { name: "twitter:description", content: "Sistema de registro de faturamento, hotseats e gargalos do Titãs Master pela Innovai." },
+      {
+        name: "twitter:description",
+        content:
+          "Sistema de registro de faturamento, hotseats e gargalos do Titãs Master pela Innovai.",
+      },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -91,7 +103,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "apple-touch-icon", href: "/innovai-logo.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap",
+      },
     ],
   }),
   shellComponent: RootShell,

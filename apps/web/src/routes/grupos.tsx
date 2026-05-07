@@ -28,7 +28,8 @@ function GruposPage() {
     setSalvando(false);
     if (error) return toast.error(error.message);
     toast.success("Grupo criado");
-    setNome(""); setIcone("🛡️");
+    setNome("");
+    setIcone("🛡️");
     qc.invalidateQueries({ queryKey: ["grupos"] });
   };
 
@@ -41,13 +42,23 @@ function GruposPage() {
         <form onSubmit={criar} className="grid sm:grid-cols-[1fr_120px_auto] gap-3 items-end">
           <div>
             <Label>Nome do grupo</Label>
-            <Input value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Ex.: Grupo Titãs Master" />
+            <Input
+              value={nome}
+              onChange={(e) => setNome(e.target.value)}
+              placeholder="Ex.: Grupo Titãs Master"
+            />
           </div>
           <div>
             <Label>Ícone</Label>
             <Input value={icone} onChange={(e) => setIcone(e.target.value)} placeholder="🛡️" />
           </div>
-          <Button type="submit" disabled={salvando} className="bg-gold text-primary-foreground hover:opacity-90">Cadastrar</Button>
+          <Button
+            type="submit"
+            disabled={salvando}
+            className="bg-gold text-primary-foreground hover:opacity-90"
+          >
+            Cadastrar
+          </Button>
         </form>
       </Card>
 

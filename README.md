@@ -31,6 +31,7 @@ titas_master_app/
 ## Rodando localmente
 
 ```bash
+nvm use
 cp .env.example .env
 cp apps/web/.env.example apps/web/.env.local
 python scripts/env_check.py --env-file .env
@@ -38,6 +39,8 @@ cd apps/web
 npm install
 npm run dev
 ```
+
+> Recomendado: Node.js **22.12.0+** (arquivo `.nvmrc` na raiz do repositório).
 
 Também funciona com Bun ou PNPM, desde que o lockfile seja regenerado fora do gerador anterior.
 
